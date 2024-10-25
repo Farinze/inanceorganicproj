@@ -22,9 +22,7 @@ staticfiles/
 .env
 
 # Docker files
-Dockerfile
 docker-compose.yml
-.dockerignore
 
 # IDE and editor files
 .vscode/
