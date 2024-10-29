@@ -3,45 +3,51 @@ pipeline {
 
     environment {
         // Define environment variables
-        GIT_REPO_URL = 'https://github.com/yourusername/your-repo.git'
-        BRANCH_NAME = 'main'  // Change to your target branch
-        DOCKER_IMAGE_NAME = 'your-django-app'
-        AWS_INSTANCE_IP = 'your-ec2-instance-ip'
-        SSH_KEY_PATH = credentials('your-ssh-key-id') // Jenkins credentials ID for SSH key
+        GIT_REPO_URL = 'https://github.com/Farinze/inanceorganicproj.git'
+        BRANCH_NAME = 'main'
+        DOCKER_IMAGE_NAME = 'Farinze/inanceorganicproj:latest'  // Replace with your Docker Hub or ECR repository name
+        AWS_INSTANCE_IP = '52.90.182.97'
+        SSH_KEY_PATH = 'inance_jenk'  // Jenkins credentials ID for SSH key
     }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    // Checkout the specified branch
-                    git branch: BRANCH_NAME, url: GIT_REPO_URL
-                }
+                // Checkout the specified branch from GitHub
+                git branch: BRANCH_NAME, url: GIT_REPO_URL
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Push Docker Image') {
             steps {
-                script {
-                    // Build the Docker image
-                    docker.build(DOCKER_IMAGE_NAME)
+                // Build and push Docker image to a registry
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh """
+                        # Login to Docker registry
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+                        # Build the Docker image
+                        docker build -t ${DOCKER_IMAGE_NAME} .
+
+                        # Push the Docker image to Docker Hub (or your registry)
+                        docker push ${DOCKER_IMAGE_NAME}
+                    """
                 }
             }
         }
 
         stage('Deploy to AWS') {
             steps {
-                script {
-                    // Deploy the Docker container to AWS instance
-                    sshagent (credentials: ['your-ssh-key-id']) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${AWS_INSTANCE_IP} << EOF
+                // SSH into the AWS instance and pull/run the Docker image
+                sshagent (credentials: [SSH_KEY_PATH]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ubuntu@${AWS_INSTANCE_IP} << EOF
                         docker pull ${DOCKER_IMAGE_NAME}
                         docker stop \$(docker ps -q --filter "ancestor=${DOCKER_IMAGE_NAME}")
+                        docker rm \$(docker ps -q --filter "ancestor=${DOCKER_IMAGE_NAME}")
                         docker run -d -p 80:8000 ${DOCKER_IMAGE_NAME}
-                        EOF
-                        """
-                    }
+                    EOF
+                    """
                 }
             }
         }
