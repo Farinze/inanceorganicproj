@@ -2,10 +2,10 @@ pipeline {
     agent any 
 
     environment {
-        GIT_REPO_URL = 'https://github.com/Success-C-Opara/organicproject.git'
+        GIT_REPO_URL = https://github.com/Farinze/inanceorganicproj.git
         BRANCH_NAME = 'main'
-        DOCKER_IMAGE_NAME = 'organic-django-app'
-        AWS_INSTANCE_IP = '3.80.209.86'
+        DOCKER_IMAGE_NAME = 'inanceorganicproj'
+        AWS_INSTANCE_IP = '54.209.248.46'
         SSH_KEY_PATH = '/var/lib/jenkins/success-aws-key.pem'
     }
 
