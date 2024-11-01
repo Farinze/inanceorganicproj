@@ -6,7 +6,7 @@ pipeline {
         BRANCH_NAME = 'main'
         DOCKER_IMAGE_NAME = 'inanceorganicproj'
         AWS_INSTANCE_IP = '54.209.248.46'
-        SSH_KEY_PATH = '/var/lib/jenkins/success-aws-key.pem'
+        SSH_KEY_PATH = '/var/lib/jenkins/inance_jenks.pem'
     }
 
     stages {
