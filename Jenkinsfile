@@ -2,52 +2,43 @@ pipeline {
     agent any 
 
     environment {
-        GIT_REPO_URL = https://github.com/Farinze/inanceorganicproj.git
-        BRANCH_NAME = 'main'
-        DOCKER_IMAGE_NAME = 'inanceorganicproj'
-        AWS_INSTANCE_IP = '54.209.248.46'
-        SSH_KEY_PATH = '/var/lib/jenkins/inance_jenks.pem'
+        // Define environment variables
+        GIT_REPO_URL = "https://github.com/Farinze/inanceorganicproj.git"  // URL in quotes
+        BRANCH_NAME = 'main'  // Change to your target branch if needed
+        DOCKER_IMAGE_NAME = 'inanceorganicproj'  // Docker image name for your app
+        AWS_INSTANCE_IP = '52.90.182.97'
+        SSH_KEY_PATH = '/var/lib/jenkins/inance_jenks.pem'  // Jenkins credentials ID for the SSH key
         INSTANCE_ID = 'i-05941ff098e6168a9'  // Instance ID for reference
     }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    // Checkout the specified branch
-                    git branch: BRANCH_NAME, url: GIT_REPO_URL
-                }
+                // Checkout the specified branch from GitHub
+                git branch: BRANCH_NAME, url: GIT_REPO_URL
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                // Build Docker image for the Django app
                 script {
-                    // Build the Docker image from the Dockerfile in the current directory
-                    dir('.') {  // Using the root directory of the project
-                        docker.build(DOCKER_IMAGE_NAME)
-                    }
+                    docker.build("${DOCKER_IMAGE_NAME}")
                 }
             }
         }
 
         stage('Deploy to AWS') {
             steps {
-                script {
+                // SSH into the AWS instance to deploy Docker container
+                sshagent (credentials: [SSH_KEY_PATH]) {
                     sh """
-                    ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no ubuntu@${AWS_INSTANCE_IP} " \
-                    # Pull the latest Docker image \
-                    docker pull ${DOCKER_IMAGE_NAME} || true; \
-                    
-                    # Stop any running containers using the same image \
-                    CONTAINER_ID=\$(docker ps -q --filter 'ancestor=${DOCKER_IMAGE_NAME}'); \
-                    if [ -n '\$CONTAINER_ID' ]; then \
-                        docker stop \$CONTAINER_ID; \
-                        docker rm \$CONTAINER_ID; \
-                    fi; \
-                    
-                    # Run the new container \
-                    docker run -d -p 80:8000 ${DOCKER_IMAGE_NAME}"
+                    ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH}.pem ubuntu@${AWS_INSTANCE_IP} << EOF
+                        docker pull ${DOCKER_IMAGE_NAME}:latest
+                        docker stop \$(docker ps -q --filter "ancestor=${DOCKER_IMAGE_NAME}")
+                        docker rm \$(docker ps -q --filter "ancestor=${DOCKER_IMAGE_NAME}")
+                        docker run -d -p 80:8000 ${DOCKER_IMAGE_NAME}:latest
+                    EOF
                     """
                 }
             }
@@ -63,3 +54,4 @@ pipeline {
         }
     }
 }
+
