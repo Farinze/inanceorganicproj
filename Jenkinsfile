@@ -7,6 +7,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'inanceorganicproj'
         AWS_INSTANCE_IP = '54.209.248.46'
         SSH_KEY_PATH = '/var/lib/jenkins/inance_jenks.pem'
+        INSTANCE_ID = 'i-05941ff098e6168a9'  // Instance ID for reference
     }
 
     stages {
