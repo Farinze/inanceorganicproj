@@ -6,9 +6,9 @@ pipeline {
         GIT_REPO_URL = "https://github.com/Farinze/inanceorganicproj.git"  // URL in quotes
         BRANCH_NAME = 'main'  // Change to your target branch if needed
         DOCKER_IMAGE_NAME = 'inanceorganicproj'  // Docker image name for your app
-        AWS_INSTANCE_IP = '52.90.182.97'
-        SSH_KEY_PATH = '/var/lib/jenkins/inance_jenks.pem'  // Jenkins credentials ID for the SSH key
-        INSTANCE_ID = 'i-05941ff098e6168a9'  // Instance ID for reference
+        AWS_INSTANCE_IP = '54.162.24.107'
+        SSH_KEY_PATH = '/var/lib/jenkins/inance.pem'  // Jenkins credentials ID for the SSH key
+        INSTANCE_ID = 'i-0267b5ae3d668468e'  // Instance ID for reference
     }
 
     stages {
