@@ -5,7 +5,7 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/Farinze/inanceorganicproj.git'
         BRANCH_NAME = 'main'
         DOCKER_IMAGE_NAME = 'organic-django-app'
-        AWS_INSTANCE_IP = ''107.22.123.119
+        AWS_INSTANCE_IP = '107.22.123.119'
         SSH_KEY_PATH = '/var/lib/jenkins/inance.pem'
     }
 
