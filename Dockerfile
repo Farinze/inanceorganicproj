@@ -1,23 +1,23 @@
 # Use the latest official Python runtime as a parent image
-FROM python:3.9  # Specify a stable Python version for consistency
+FROM python:latest
 
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy requirements.txt into the working directory
-COPY requirements.txt .
+# Copy requirements.txt
+COPY requirements.txt ./
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
+# Copy the current directory contents into the container at /usr/src/app
 COPY . .
 
-# Expose port 8000 for Django app
+# Make port 8000 available to the world outside this container
 EXPOSE 8000
 
-# Define environment variable for Django settings (adjust as needed)
+# Define environment variable
 ENV DJANGO_SETTINGS_MODULE=myproject.settings
 
-# Run manage.py to start the Django server
+# Run manage.py to start the server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
