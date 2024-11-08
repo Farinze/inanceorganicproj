@@ -23,4 +23,4 @@ EXPOSE 8000
 ENV DJANGO_SETTINGS_MODULE=myproject.settings
 
 # Run manage.py to start the server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--workers", "3", "myproject.wsgi:application"]
