@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 # 'http://127.0.0.1:8000/', '127.0.0.1'
-'54.209.248.46',  # Your server's IP address
+'3.87.115.217',  # Your server's IP address
     'localhost',    # Local development
     '127.0.0.1',    # Localhost
     # Add any other domain names or IPs you want to allow
