@@ -1,17 +1,16 @@
-
 pipeline {
-    agent any 
+    agent any
 
     environment {
-        GIT_REPO_URL = 'https://github.com/Farinze/inanceorganicproj.git'
+        GIT_REPO_URL = 'https://github.com/farinze'
         BRANCH_NAME = 'main'
         DOCKER_IMAGE_NAME = 'inance'
         AWS_INSTANCE_IP = '3.87.115.217'
         SSH_KEY_PATH = '/var/lib/jenkins/inance.pem'
-        DOCKER_IMAGE_TAR = 'inance'
+        DOCKER_IMAGE_TAR = 'inance.tar'
     }
 
-   stages {
+    stages {
         stage('Checkout') {
             steps {
                 script {
