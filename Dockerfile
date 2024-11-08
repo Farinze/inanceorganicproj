@@ -1,26 +1,29 @@
 # Use the latest official Python runtime as a parent image
 FROM python:latest
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy requirements.txt
-COPY requirements.txt ./
+# Copy requirements.txt first to leverage Docker cache
+COPY requirements.txt .
 
-# Upgrade pip and setuptools
-RUN pip install --upgrade pip setuptools
-
-# Install any needed packages specified in requirements.txt
+# Install dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the current directory contents into the container at /usr/src/app
+# Copy the rest of the application code into the container
 COPY . .
 
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
+# Collect static files (for production)
+RUN python manage.py collectstatic --noinput
 
-# Define environment variable
+# Set the environment variable for Django settings
 ENV DJANGO_SETTINGS_MODULE=myproject.settings
 
-# Run manage.py to start the server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--workers", "3", "myproject.wsgi:application"]
+# Expose port 8000 for the Django application
+EXPOSE 8000
+
+# Health check (optional)
+HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1
+
+# Use gunicorn as the WSGI server (recommended for production)
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "myproject.wsgi:application"]
