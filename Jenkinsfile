@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO_URL = 'https://github.com/farinze'
+        GIT_REPO_URL = 'https://github.com/Farinze/inanceorganicproj.git'
         BRANCH_NAME = 'main'
         DOCKER_IMAGE_NAME = 'inance'
         AWS_INSTANCE_IP = '3.87.115.217'
